@@ -1,5 +1,7 @@
 ---
 title: "AE 03: Duke Forest + data visualization"
+author: Jessica St Jean
+format: pdf
 ---
 
 ```{r}
@@ -12,8 +14,7 @@ library(openintro)
 
 ## Exercise 1
 
-Suppose you're helping some family friends who are looking to buy a house in Duke Forest.
-As they browse Zillow listings, they realize some houses have garages and others don't, and they wonder: **Does having a garage make a difference?**
+Suppose you're helping some family friends who are looking to buy a house in Duke Forest. As they browse Zillow listings, they realize some houses have garages and others don't, and they wonder: **Does having a garage make a difference?**
 
 Luckily, you can help them answer this question with data visualization!
 
@@ -23,10 +24,9 @@ Luckily, you can help them answer this question with data visualization!
 
 ```{r}
 #| label: garage
-#| eval: false
 
-duke_forest |>
-  mutate(garage = if_else(str_detect(parking, "Garage"),   "Garage", "No garage"))
+duke_forest <-duke_forest |>
+  mutate(garage = if_else(str_detect(parking, "Garage"), "Garage", "No garage"))
 ```
 
 -   Then, facet by `garage` and use different colors for the two facets.
@@ -37,22 +37,25 @@ duke_forest |>
 ```{r}
 #| label: price-garage
 
-# add code here
+ggplot(duke_forest, aes(x=price, fill= garage)) +
+  geom_histogram(binwidth=50000, colour = "white")+
+  facet_wrap(~ garage) +
+  labs(
+    x= "Listing Price ($)",
+    y= "Number of Houses",
+    title= "Listing Price vs Garage Existence"
+  )
 ```
 
-Add narrative here...
+Comment: It appears that the houses without garages frequently have a higher price than those which do have a garage. While there are houses with garages that are more expensive than those without garages, the majority of the no garage houses are more expensive than the majority of the houses with a garage. This makes it appear that having a garage or not does make a difference in the price somewhat, but maybe not in the expected way.
 
 ::: callout-important
-Now is a good time to render, commit, and push.
-Make sure that you commit and push all changed documents and your Git pane is completely empty before proceeding.
+Now is a good time to render, commit, and push. Make sure that you commit and push all changed documents and your Git pane is completely empty before proceeding.
 :::
 
 ## Exercise 2
 
-It's expected that within any given marker larger houses will be priced higher.
-It's also expected that the age of the house will have an effect on the price.
-However in some markets new houses might be more expensive while in others new construction might mean "no character" and hence be less expensive.
-So your family friends ask: "In Duke Forest, do houses that are bigger and more expensive tend to be newer ones than those that are smaller and cheaper?"
+It's expected that within any given marker larger houses will be priced higher. It's also expected that the age of the house will have an effect on the price. However in some markets new houses might be more expensive while in others new construction might mean "no character" and hence be less expensive. So your family friends ask: "In Duke Forest, do houses that are bigger and more expensive tend to be newer ones than those that are smaller and cheaper?"
 
 Once again, data visualization skills to the rescue!
 
@@ -67,12 +70,31 @@ Once again, data visualization skills to the rescue!
 ```{r}
 #| label: price-area
 
-# add code here
+ggplot(duke_forest, aes(x=area, y=price, colour=year_built))+
+  geom_point()+
+  geom_smooth(se= FALSE, colour="royalblue")+
+  labs(
+    x="Area of Home (sqft)",
+    y= "Price of Home ($)",
+    title ="Home Size vs Listing Price",
+    colour= "Year Built"
+  )
 ```
 
-Add narrative here...
+Comment:
+
+Claim 1: Larger houses are priced higher.
+
+Response: This appears to be true as the trend line goes up when (higher price) moving towards the right side of the graph (bigger homes) this indicates a positive relationship between house size and price.
+
+Claim 2: Newer houses are priced higher.
+
+Response: This graph does not appear to support this claim as the newer houses are mostly concentrated in the mid range of the graph. With the slightly older houses being priced as more expensive for the most part.
+
+Claim 3: Bigger and more expensive houses tend to be newer ones than smaller and cheaper ones.
+
+Response: This does not appear to be the case when looking at the graph, the majority of the newer houses are in the mid range of the graph as stated previously with moderate size and price, the higher and lower ends of the size and price appear to mostly be older homes.
 
 ::: callout-important
-Now is a good time to render, commit, and push.
-Make sure that you commit and push all changed documents and your Git pane is completely empty before proceeding.
+Now is a good time to render, commit, and push. Make sure that you commit and push all changed documents and your Git pane is completely empty before proceeding.
 :::
